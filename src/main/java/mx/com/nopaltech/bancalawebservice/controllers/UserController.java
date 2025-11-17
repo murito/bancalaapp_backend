@@ -194,7 +194,9 @@ public class UserController {
             if (account.isPresent() && TipoMovimiento.GASTO.equals(movimiento.getTipo())) {
                 Account acc =  account.get();
                 BigDecimal balance = acc.getCurrentBalance();
-                balance = balance.subtract(movimiento.getCantidad());
+                balance = acc.getType().equals("debit") ?
+                        balance.subtract(movimiento.getCantidad()) :
+                        balance.add(movimiento.getCantidad());
                 acc.setCurrentBalance(balance);
                 accountService.save(acc);
 
@@ -204,7 +206,9 @@ public class UserController {
             if (account.isPresent() && TipoMovimiento.INGRESO.equals(movimiento.getTipo())) {
                 Account acc =  account.get();
                 BigDecimal balance = acc.getCurrentBalance();
-                balance = balance.add(movimiento.getCantidad());
+                balance = acc.getType().equals("debit") ?
+                        balance.add(movimiento.getCantidad()):
+                        balance.subtract(movimiento.getCantidad());
                 acc.setCurrentBalance(balance);
                 accountService.save(acc);
 
